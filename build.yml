@@ -1,0 +1,42 @@
+name: Build AOSP ROM
+
+on:
+  push:
+    branches:
+      - termux-build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build ROM for Redmi 12 5G
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Set up environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison build-essential curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev \
+            lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils \
+            lzop pngcrush schedtool squashfs-tools xsltproc zip zlib1g-dev openjdk-11-jdk python-is-python3
+
+      - name: Sync AOSP source (dummy step)
+        run: |
+          echo "AOSP source syncing would go here (skip for now)"
+
+      - name: Setup ccache
+        run: |
+          sudo apt install ccache
+          export USE_CCACHE=1
+          ccache -M 50G
+
+      - name: Start Build (example only)
+        run: |
+          mkdir output
+          echo "ROM build complete" > output/readme.txt
+
+      - name: Upload ROM
+        uses: actions/upload-artifact@v3
+        with:
+          name: output-zip
+          path: output/*
